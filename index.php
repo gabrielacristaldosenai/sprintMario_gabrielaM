@@ -94,15 +94,15 @@ try {
             <p id="welcome-message">Bem-vindo ao jogo!</p>
 
             <div class="menu-buttons">
-                <button id="start-game-btn" class="menu-btn">
+                <button id="start-game-btn" class="btn btn-primary">
                 Iniciar o jogo
                 </button>
 
-                <button id="choose-character-btn" class="menu-btn">
+                <button id="choose-character-btn" class="btn btn-primary">
                 Escolher um novo personagem
                 </button>
 
-                <button id="ranking-btn" class="menu-btn">
+                <button id="ranking-btn" class="btn btn-primary">
                 Ver ranking
                 </button>
 
