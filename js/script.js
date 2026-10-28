@@ -44,12 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainMenu = document.getElementById('main-menu');
     const welcomeMessage = document.getElementById('welcome-message');
 
-    document.getElementById('start-game-btn').addEventListener('click', () => {
-        mainMenu.style.display = 'none';
 
-        // Inicia usando a função que seu jogo já possui
+    document.getElementById('start-game-btn').addEventListener('click', () => {
+        startModal.classList.remove('active');
+        mainMenu.style.display = 'none';
         startGame();
     });
+
 
     document.getElementById('choose-character-btn').addEventListener('click', () => {
         // Troque "character-selection" pelo ID da sua tela de personagens
@@ -444,10 +445,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Submit do Formulário de Início (INICIAR JOGO)
+
     startForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Impede o recarregamento da página
+        e.preventDefault();
 
         const nameValue = playerInput.value.trim();
+
         if (!nameValue) {
             playerInput.focus();
             return;
@@ -456,10 +459,14 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPlayer = nameValue;
         localStorage.setItem('mario_jump_player', currentPlayer);
 
-        // Fecha tela de início e começa o jogo
-        startModal.classList.remove('active');
-        startGame();
+        // Atualiza o nome de boas-vindas
+        welcomeMessage.textContent = 'Bem-vindo, ' + currentPlayer + '!';
+
+        // Esconde o formulário e mostra o menu
+        startForm.style.display = 'none';
+        mainMenu.style.display = 'block';
     });
+
 
     // Botão "VER RANKING" na tela inicial
     btnViewRanking.addEventListener('click', () => {
