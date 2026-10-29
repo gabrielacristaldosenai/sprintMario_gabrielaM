@@ -1,8 +1,6 @@
 <?php
-
 require_once 'conexao.php';
 
-// Busca inicial do ranking para carregar rápido na primeira abertura
 $rankingInicial = [];
 try {
     $stmt = $pdo->query("
@@ -13,7 +11,6 @@ try {
     ");
     $rankingInicial = $stmt->fetchAll();
 } catch (Exception $e) {
-    // Caso o banco ainda não possua registros
     $rankingInicial = [];
 }
 ?>
@@ -24,7 +21,8 @@ try {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mario Jump - Jogo com Ranking MySQL</title> 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Força atualização do CSS evitando cache -->
+    <link rel="stylesheet" href="css/style.css?v=2">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -32,7 +30,6 @@ try {
 <body>
 
     <div class="game-container">
-        
         <header class="hud-bar">
             <div class="player-info">
                 <span class="label">JOGADOR:</span>
@@ -44,7 +41,6 @@ try {
             </div>
         </header>
 
-        
         <main class="game-board" id="game-board">
             <img src="assets/clouds.png" class="clouds" alt="Nuvens">
             <img src="assets/mario.gif" class="mario" alt="Mario">
@@ -55,10 +51,8 @@ try {
         </main>
     </div>
 
-    <!-- 1. TELAS INICIAIS (nome -> menu) -->
+    <!-- TELA INICIAL ÚNICA -->
     <div class="modal-overlay active" id="start-modal">
-
-        <!-- Tela 1: pedir o nome -->
         <div class="modal-card" id="name-card">
             <div class="modal-header">
                 <h1 class="game-title">SUPER MARIO JUMP</h1>
@@ -70,7 +64,13 @@ try {
                     <label for="player-input">DIGITE SEU NOME:</label>
                     <input type="text" id="player-input" placeholder="Ex: Seu Nome"
                            maxlength="30" required autocomplete="off" autofocus>
-                    <button type="submit" class="btn btn-primary" id="continue">Continuar</button>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary" id="start-game-btn">Iniciar Jogo</button>
+                    <button type="button" class="btn btn-primary" id="ranking-btn">Ver Ranking</button>
+                    <button type="button" class="btn btn-primary" id="choose-character-btn">Escolher Novo Personagem</button>
+                    <a href="empresa.html" class="btn btn-secondary" id="company-btn">Conhecer mais da empresa</a>
                 </div>
             </form>
 
@@ -78,22 +78,9 @@ try {
                 <span class="status-dot online"></span> Conectado ao MySQL
             </div>
         </div>
-
-        <!-- Tela 2: menu principal (começa escondido) -->
-        <div id="main-menu" class="main-menu" style="display: none;">
-            <h1>SUPER MARIO JUMP</h1>
-            <p id="welcome-message">Bem-vindo ao jogo!</p>
-
-            <div class="modal-actions">
-                <button type="button" class="btn btn-primary" id="start-game-btn">Iniciar Jogo</button>
-                <button type="button" class="btn btn-primary" id="ranking-btn">Ver Ranking</button>
-                <button type="button" class="btn btn-primary" id="choose-character-btn">Escolher Novo Personagem</button>
-                <a href="empresa.html" class="btn btn-primary" id="company-btn">Conhecer mais da empresa</a>
-            </div>
-        </div>
     </div>
 
-    <!-- 2. TELA DE GAME OVER & RANKING -->
+    <!-- TELA DE GAME OVER & RANKING -->
     <div class="modal-overlay" id="gameover-modal">
         <div class="modal-card gameover-card">
             <div class="modal-header">
@@ -145,7 +132,6 @@ try {
         </div>
     </div>
 
-   
     <script src="js/script.js" defer></script>
 </body>
 </html>
