@@ -29,7 +29,6 @@ try {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-</head>
 <body>
 
     <div class="game-container">
@@ -56,84 +55,43 @@ try {
         </main>
     </div>
 
-    <!-- 1. TELA DE INÍCIO / INSERIR NOME -->
+    <!-- 1. TELAS INICIAIS (nome -> menu) -->
     <div class="modal-overlay active" id="start-modal">
-        <div class="modal-card">
+
+        <!-- Tela 1: pedir o nome -->
+        <div class="modal-card" id="name-card">
             <div class="modal-header">
-                <h1 class="game-title">MARIO JUMP</h1>
+                <h1 class="game-title">SUPER MARIO JUMP</h1>
                 <p class="game-subtitle">Corra, desvie dos canos e dispute o topo do ranking!</p>
             </div>
 
             <form class="start-form" id="start-form">
                 <div class="input-group">
                     <label for="player-input">DIGITE SEU NOME:</label>
-                    <input 
-                        type="text" 
-                        id="player-input" 
-                        placeholder="Ex: Seu Nome" 
-                        maxlength="30" 
-                        required 
-                        autocomplete="off"
-                        autofocus
-                    >
+                    <input type="text" id="player-input" placeholder="Ex: Seu Nome"
+                           maxlength="30" required autocomplete="off" autofocus>
+                    <button type="submit" class="btn btn-primary" id="continue">Continuar</button>
                 </div>
-
-                <!--<div class="modal-actions">
-                    <button type="submit" class="btn btn-primary" id="btn-start">INICIAR JOGO</button>
-                    <button type="button" class="btn btn-secondary" id="btn-view-ranking">VER RANKING</button>
-                </div>-->
             </form>
 
             <div class="server-status" id="server-status">
                 <span class="status-dot online"></span> Conectado ao MySQL
             </div>
         </div>
-        <!-- Menu inicial -->
+
+        <!-- Tela 2: menu principal (começa escondido) -->
         <div id="main-menu" class="main-menu" style="display: none;">
             <h1>SUPER MARIO JUMP</h1>
             <p id="welcome-message">Bem-vindo ao jogo!</p>
 
-            <div class="menu-buttons">
-                <button id="start-game-btn" class="btn btn-primary">
-                Iniciar o jogo
-                </button>
-
-                <button id="choose-character-btn" class="btn btn-primary">
-                Escolher um novo personagem
-                </button>
-
-                <button id="ranking-btn" class="btn btn-primary">
-                Ver ranking
-                </button>
-
-                <button id="company-btn" class="menu-btn company-btn">
-                Conhecer mais da empresa
-                </button>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" id="start-game-btn">Iniciar Jogo</button>
+                <button type="button" class="btn btn-primary" id="ranking-btn">Ver Ranking</button>
+                <button type="button" class="btn btn-primary" id="choose-character-btn">Escolher Novo Personagem</button>
+                <a href="empresa.html" class="btn btn-primary" id="company-btn">Conhecer mais da empresa</a>
             </div>
         </div>
     </div>
-    <div id="main-menu" class="main-menu" style="display: none;">
-            <h1>SUPER MARIO JUMP</h1>
-            <p id="welcome-message">Bem-vindo ao jogo!</p>
-
-            <div class="menu-buttons">
-                <button id="start-game-btn" class="menu-btn">
-                Iniciar o jogo
-                </button>
-
-                <button id="choose-character-btn" class="menu-btn">
-                Escolher um novo personagem
-                </button>
-
-                <button id="ranking-btn" class="menu-btn">
-                Ver ranking
-                </button>
-
-                <button id="company-btn" class="menu-btn company-btn">
-                Conhecer mais da empresa
-                </button>
-            </div>
-        </div>
 
     <!-- 2. TELA DE GAME OVER & RANKING -->
     <div class="modal-overlay" id="gameover-modal">

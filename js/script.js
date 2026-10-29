@@ -19,8 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startModal = document.getElementById('start-modal');
     const startForm = document.getElementById('start-form');
     const playerInput = document.getElementById('player-input');
-    const btnViewRanking = document.getElementById('btn-view-ranking');
-
+    
     const gameoverModal = document.getElementById('gameover-modal');
     const finalScoreValue = document.getElementById('final-score-value');
     const saveStatusMsg = document.getElementById('save-status-msg');
@@ -41,20 +40,38 @@ document.addEventListener('DOMContentLoaded', () => {
         playerInput.value = savedName;
     }
 
+    const nameCard = document.getElementById('name-card');
     const mainMenu = document.getElementById('main-menu');
     const welcomeMessage = document.getElementById('welcome-message');
 
-    document.getElementById('start-game-btn').addEventListener('click', () => {
+    function showNameScreen() {
         mainMenu.style.display = 'none';
+        nameCard.style.display = 'block';
+    }
 
-        // Inicia usando a função que seu jogo já possui
+    function showMenuScreen() {
+        nameCard.style.display = 'none';
+        mainMenu.style.display = 'block';
+    }
+
+    // Menu: Iniciar Jogo
+    document.getElementById('start-game-btn').addEventListener('click', () => {
+        startModal.classList.remove('active');
         startGame();
     });
 
-    document.getElementById('choose-character-btn').addEventListener('click', () => {
-        // Troque "character-selection" pelo ID da sua tela de personagens
-        const characterScreen = document.getElementById('character-selection');
+    // Menu: Ver Ranking
+    document.getElementById('ranking-btn').addEventListener('click', () => {
+        fetchRanking();
+        finalScoreValue.textContent = '---';
+        saveStatusMsg.textContent = '';
+        startModal.classList.remove('active');
+        gameoverModal.classList.add('active');
+    });
 
+    // Menu: Escolher Novo Personagem (tela ainda não criada)
+    document.getElementById('choose-character-btn').addEventListener('click', () => {
+        const characterScreen = document.getElementById('character-selection');
         if (characterScreen) {
             mainMenu.style.display = 'none';
             characterScreen.style.display = 'block';
@@ -63,19 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('ranking-btn').addEventListener('click', () => {
-        window.location.href = 'ranking.php';
-    });
+    // "Conhecer mais da empresa" é um link <a href="empresa.html">, não precisa de JS
 
-    document.getElementById('company-btn').addEventListener('click', () => {
-        // Troque "empresa.php" pelo nome da página da sua empresa
-        window.location.href = 'empresa.php';
-    });
-    mainMenu.style.display = 'block';
-    welcomeMessage.textContent = 'Bem-vindo, ' + nomeJogador + '!';
-    /**
-     * Inicia uma nova rodada
-     */
+
+    /*Inicia uma nova rodada*/
     function startGame() {
         // Limpa loops anteriores se existirem
         clearInterval(gameLoop);
@@ -102,20 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gameBoard.classList.add('running');
 
         // Pontuação e dificuldade progressiva
-        scoreLoop = setInterval(() => {
-            if (isPlaying) {
-                score += 1;
-                scoreDisplay.textContent = score;
-
-                if (score % 500 === 0) {
-                    updateDifficulty();
-                    gameBoard.style.setProperty(
-                        '--pipe-speed',
-                        Math.max(1.05, 1.6 - (score / 500) * 0.12) + 's'
-                    );
-                }
-            }
-        }, 100);
         scoreLoop = setInterval(() => {
             if (isPlaying) {
                 score += 1;
@@ -214,6 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
             'stage-2',
             'stage-3',
             'stage-4'
+        );
+
+        gameBoard.style.setProperty(
+            '--pipe-speed',
+            Math.max(1.2, 2.4 - Math.floor(score / 500) * 0.25) + 's'
         );
 
         if (score >= 3000) {
@@ -444,10 +443,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Submit do Formulário de Início (INICIAR JOGO)
+
     startForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Impede o recarregamento da página
+        e.preventDefault();
 
         const nameValue = playerInput.value.trim();
+
         if (!nameValue) {
             playerInput.focus();
             return;
@@ -456,24 +457,19 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPlayer = nameValue;
         localStorage.setItem('mario_jump_player', currentPlayer);
 
-        // Fecha tela de início e começa o jogo
-        startModal.classList.remove('active');
-        startGame();
+        // Atualiza o nome de boas-vindas
+        welcomeMessage.textContent = 'Bem-vindo, ' + currentPlayer + '!';
+
+        // Troca a tela do nome pelo menu
+        showMenuScreen();
     });
 
-    // Botão "VER RANKING" na tela inicial
-    btnViewRanking.addEventListener('click', () => {
-        fetchRanking();
-        finalScoreValue.textContent = '---';
-        saveStatusMsg.textContent = '';
-        startModal.classList.remove('active');
-        gameoverModal.classList.add('active');
-    });
 
     // Botão "JOGAR NOVAMENTE" no Game Over
     btnRestart.addEventListener('click', () => {
         gameoverModal.classList.remove('active');
         if (!currentPlayer) {
+            showNameScreen();
             startModal.classList.add('active');
             playerInput.focus();
         } else {
@@ -485,6 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnChangePlayer.addEventListener('click', () => {
         gameoverModal.classList.remove('active');
         resetElements();
+        showNameScreen();
         startModal.classList.add('active');
         playerInput.value = '';
         playerInput.focus();
