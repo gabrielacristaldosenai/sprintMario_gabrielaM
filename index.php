@@ -70,9 +70,35 @@ try {
                     <button type="submit" class="btn btn-primary" id="start-game-btn">Iniciar Jogo</button>
                     <button type="button" class="btn btn-primary" id="ranking-btn">Ver Ranking</button>
                     <button type="button" class="btn btn-primary" id="choose-character-btn">Escolher Novo Personagem</button>
-                    <a href="empresa.html" class="btn btn-secondary" id="company-btn">Conhecer mais da empresa</a>
                 </div>
             </form>
+            
+            <!-- Menu de escolha de personagem -->
+            <div id="character-selection" style="display: none;">
+                <h2 class="game-title">ESCOLHA SEU PERSONAGEM</h2>
+                <p class="game-subtitle">Com quem você quer jogar?</p>
+
+                <div class="character-grid">
+                    <button type="button" class="character-option" data-character="mario">
+                        <img src="assets/mario.gif" alt="Mario">
+                        <span>Mario</span>
+                    </button>
+
+                    <button type="button" class="character-option" data-character="luigi">
+                        <img src="assets/luigi.gif" alt="Luigi">
+                        <span>Luigi</span>
+                    </button>
+
+                    <button type="button" class="character-option" data-character="yoshi">
+                        <img src="assets/yoshi.gif" alt="Yoshi">
+                        <span>Yoshi</span>
+                    </button>
+                </div>
+
+                <button type="button" id="back-to-menu-btn" class="btn btn-secondary">
+                VOLTAR AO MENU
+                </button>
+            </div>
 
             <div class="server-status" id="server-status">
                 <span class="status-dot online"></span> Conectado ao MySQL
@@ -131,7 +157,6 @@ try {
             </div>
         </div>
     </div>
-
     <script src="js/script.js" defer></script>
 </body>
 </html>

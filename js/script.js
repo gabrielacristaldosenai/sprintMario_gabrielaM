@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Variáveis de Estado
     let currentPlayer = '';
+    let selectedCharacter = 'mario';
     let score = 0;
     let isPlaying = false;
     let gameLoop = null;
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botão INICIAR JOGO / Envio do Formulário
     const startGameBtn = document.getElementById('start-game-btn');
+    const chooseCharacterBtn = document.getElementById('choose-character-btn');
     if (startGameBtn) {
         startGameBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -80,13 +82,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Botão ESCOLHER NOVO PERSONAGEM
-    const chooseCharacterBtn = document.getElementById('choose-character-btn');
+    const characterSelection = document.getElementById('character-selection');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
+
     if (chooseCharacterBtn) {
         chooseCharacterBtn.addEventListener('click', () => {
-            alert('A tela de escolha de personagens ainda precisa ser criada.');
+            startForm.style.display = 'none';
+            characterSelection.style.display = 'block';
         });
     }
+
+    if (backToMenuBtn) {
+        backToMenuBtn.addEventListener('click', () => {
+            characterSelection.style.display = 'none';
+            startForm.style.display = 'flex';
+        });
+    }
+
+    document.querySelectorAll('.character-option').forEach((button) => {
+        button.addEventListener('click', () => {
+            selectedCharacter = button.dataset.character;
+
+            document.querySelectorAll('.character-option').forEach((option) => {
+                option.classList.remove('selected');
+            });
+
+            button.classList.add('selected');
+
+            // Volta à tela inicial após escolher
+            characterSelection.style.display = 'none';
+            startForm.style.display = 'flex';
+        });
+    });
+
 
     /* Inicia uma nova rodada */
     function startGame() {
@@ -132,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isPlaying) {
                 criarMoeda();
             }
-        }, 4000);
+        }, 5000);
     }
 
     function respawnCoin() {
@@ -186,13 +214,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (mario) {
-            mario.src = 'assets/mario.gif';
+            mario.src = `assets/${selectedCharacter}.gif`;
+            mario.alt = selectedCharacter;
+
+            if (selectedCharacter === 'luigi' || selectedCharacter === 'yoshi') {
+                mario.style.width = '110px';
+            } else {
+                mario.style.width = '150px';
+            }
+
+            mario.style.height = 'auto';
+            mario.style.marginLeft = '0';
             mario.style.animation = '';
             mario.style.bottom = '0px';
-            mario.style.width = '';
-            mario.style.marginLeft = '';
             mario.classList.remove('jump');
         }
+
 
         if (jumpTip) jumpTip.style.opacity = '1';
     }
@@ -264,18 +301,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
     function jump() {
         if (!isPlaying || !mario) return;
         if (mario.classList.contains('jump')) return;
 
+        mario.classList.remove('jump');
+        void mario.offsetWidth;
         mario.classList.add('jump');
 
-        if (jumpTip) jumpTip.style.opacity = '0';
+        if (jumpTip) {
+            jumpTip.style.opacity = '0';
+        }
 
         setTimeout(() => {
             mario.classList.remove('jump');
         }, 900);
     }
+
 
     function checkCollision() {
         if (!isPlaying || !pipe || !mario) return;
@@ -408,31 +451,43 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/'/g, '&#039;');
     }
 
-    // Botão JOGAR NOVAMENTE
+
     if (btnRestart) {
         btnRestart.addEventListener('click', () => {
-            if (gameoverModal) gameoverModal.classList.remove('active');
-            if (!currentPlayer) {
-                if (startModal) startModal.classList.add('active');
-                if (playerInput) playerInput.focus();
-            } else {
-                startGame();
-            }
+            gameoverModal.classList.remove('active');
+            startModal.classList.remove('active');
+            startGame();
         });
     }
 
-    // Botão TROCAR JOGADOR
     if (btnChangePlayer) {
         btnChangePlayer.addEventListener('click', () => {
-            if (gameoverModal) gameoverModal.classList.remove('active');
-            resetElements();
-            if (startModal) startModal.classList.add('active');
-            if (playerInput) {
-                playerInput.value = '';
-                playerInput.focus();
+            isPlaying = false;
+            clearInterval(gameLoop);
+            clearInterval(scoreLoop);
+
+            if (gameBoard) {
+                gameBoard.classList.remove('running');
             }
+
+            gameoverModal.classList.remove('active');
+            startModal.classList.add('active');
+
+            startForm.style.display = 'flex';
+
+            const characterSelection =
+                document.getElementById('character-selection');
+
+            if (characterSelection) {
+                characterSelection.style.display = 'none';
+            }
+
+            playerInput.value = '';
+            currentPlayer = '';
+            playerInput.focus();
         });
     }
+
 
     // Ações para Pular (Clique na tela ou Espaço/Seta Cima)
     if (gameBoard) gameBoard.addEventListener('click', jump);
