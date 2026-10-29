@@ -150,7 +150,7 @@ body {
     35% {
         bottom: 220px;
     }
-    60% {
+    55% {
         bottom: 220px;
     }
     100% {
@@ -509,9 +509,9 @@ body {
 }
 /* Estágio 1: pôr do sol */
 .game-board.stage-1 {
-    --sky-top: #f39a65;
+    --sky-top: #f5dd57;
     --sky-bottom: #795a91;
-    --ground-color: #6b7135;
+    --ground-color: #406a2c;
 }
 /* Estágio 2: anoitecendo */
 .game-board.stage-2 {
@@ -621,4 +621,79 @@ body {
     transition: all 0.2s ease;
     text-decoration: none;
     letter-spacing: 0.5px;
+}
+
+
+/* ===== Menu de escolha de personagem ===== */
+#character-selection {
+    display: none;              /* o JavaScript mostra ao clicar em "Escolher Novo Personagem" */
+    text-align: center;
+}
+#character-selection .game-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+#character-selection .game-subtitle {
+    margin-bottom: 22px;
+}
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.character-option {
+    background: #121524;
+    border: 3px solid #3b4468;
+    border-radius: 12px;
+    padding: 12px 6px 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #ffffff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    transition: all 0.2s ease;
+}
+
+.character-option img {
+    width: 100%;
+    max-width: 90px;
+    height: 90px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    background: transparent;
+}
+
+.character-option span {
+    letter-spacing: 0.5px;
+}
+
+.character-option:hover {
+    border-color: #3f57b8;
+    background: #1a2038;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(32, 58, 164, 0.4);
+}
+
+.character-option.selected {
+    border-color: #1100ff;
+    background: rgba(22, 43, 127, 0.4);
+    color: #1100ff;
+    box-shadow: 0 0 14px rgba(32, 58, 164, 0.4);
+}
+
+#back-to-menu-btn {
+    display: block;
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .character-grid { gap: 8px; }
+    .character-option { font-size: 8px; padding: 10px 4px 8px; }
+    .character-option img { height: 60px; max-width: 60px; }
 }

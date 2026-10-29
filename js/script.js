@@ -35,6 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoop = null;
     let scoreLoop = null;
 
+    // Esconde o título grande da tela inicial enquanto o menu de personagens está aberto
+    function setCardHeaderVisible(visible) {
+        const header = document.querySelector('#name-card .modal-header');
+        if (header) header.style.display = visible ? '' : 'none';
+    }
+
     // Recupera último nome utilizado caso exista no localStorage
     const savedName = localStorage.getItem('mario_jump_player');
     if (savedName && playerInput) {
@@ -89,12 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
         chooseCharacterBtn.addEventListener('click', () => {
             startForm.style.display = 'none';
             characterSelection.style.display = 'block';
+            setCardHeaderVisible(false);
         });
     }
 
     if (backToMenuBtn) {
         backToMenuBtn.addEventListener('click', () => {
             characterSelection.style.display = 'none';
+            setCardHeaderVisible(true);
             startForm.style.display = 'flex';
         });
     }
@@ -111,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Volta à tela inicial após escolher
             characterSelection.style.display = 'none';
+            setCardHeaderVisible(true);
             startForm.style.display = 'flex';
         });
     });
@@ -132,6 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBoard.style.setProperty('--pipe-speed', '2.4s');
             gameBoard.classList.add('running');
         }
+
+        // Aplica a velocidade inicial logo de cara (sem esperar o primeiro tick)
+        updateDifficulty();
 
         if (hudPlayerName) hudPlayerName.textContent = currentPlayer || 'Jogador';
 
@@ -238,10 +250,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gameBoard) return;
 
         gameBoard.classList.remove('stage-1', 'stage-2', 'stage-3', 'stage-4');
-        gameBoard.style.setProperty(
-            '--pipe-speed',
-            Math.max(1.2, 2.4 - Math.floor(score / 500) * 0.25) + 's'
-        );
+        // Velocidade do cano: mudamos a "taxa de reprodução" da animação em vez de
+        // trocar a duração no CSS. Trocar a duração no meio do caminho faz o cano
+        // pular de posição (bug dos 500/1000/1500 pontos). A taxa muda de forma suave.
+        // Tempo (em segundos) que o cano leva para cruzar a tela: quanto menor, mais rápido.
+        // Começa em PIPE_START_TIME, diminui PIPE_STEP a cada 500 pontos e nunca passa de PIPE_MIN_TIME.
+        const PIPE_START_TIME = 2.0;
+        const PIPE_STEP = 0.2;
+        const PIPE_MIN_TIME = 1.1;
+        const pipeSpeed = Math.max(PIPE_MIN_TIME, PIPE_START_TIME - Math.floor(score / 500) * PIPE_STEP);
+        const pipeRate = 2.4 / pipeSpeed; // 2.4s é a duração base definida no CSS
+
+        if (pipe) {
+            const pipeAnim = pipe.getAnimations().find(a => a.animationName === 'pipe-animation');
+            if (pipeAnim && Math.abs(pipeAnim.playbackRate - pipeRate) > 0.001) {
+                pipeAnim.playbackRate = pipeRate;
+            }
+        }
 
         if (score >= 3000) gameBoard.classList.add('stage-4');
         else if (score >= 2000) gameBoard.classList.add('stage-3');
@@ -331,6 +356,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Imagem (e tamanho) da tela de game over de cada personagem
+    const gameOverSprites = {
+        mario: { src: 'assets/game-over.png',  width: '75px',  marginLeft: '50px' },
+        luigi: { src: 'assets/game-overL.png', width: '105px', marginLeft: '30px' },
+        yoshi: { src: 'assets/game-overY.png', width: '130px', marginLeft: '20px' }
+    };
+
     function triggerGameOver(pipePosition, marioPosition) {
         isPlaying = false;
         clearInterval(gameLoop);
@@ -346,9 +378,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mario) {
             mario.style.animation = 'none';
             mario.style.bottom = `${marioPosition}px`;
-            mario.src = 'assets/game-over.png';
-            mario.style.width = '75px';
-            mario.style.marginLeft = '50px';
+            const over = gameOverSprites[selectedCharacter] || gameOverSprites.mario;
+            mario.src = over.src;
+            mario.style.width = over.width;
+            mario.style.marginLeft = over.marginLeft;
         }
 
         if (finalScoreValue) finalScoreValue.textContent = score;
@@ -480,6 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (characterSelection) {
                 characterSelection.style.display = 'none';
+            setCardHeaderVisible(true);
             }
 
             playerInput.value = '';
